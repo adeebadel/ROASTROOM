@@ -1,0 +1,27 @@
+# Render Blueprint. Deploy with: New + > Blueprint > pick this repo.
+services:
+  - type: web
+    name: roastroom
+    runtime: python
+    plan: free            # NOTE: free plan has an EPHEMERAL disk. SQLite data resets on redeploy/restart.
+                          # For persistent SQLite use a paid plan + disk (see below), or move to Postgres.
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --chdir backend app:app --workers 1 --threads 4 --bind 0.0.0.0:$PORT
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.7
+      - key: ROASTROOM_ENV
+        value: production
+      - key: TRUST_PROXY
+        value: "1"
+      - key: SEED_DEMO
+        value: "1"
+      - key: ADMIN_SECRET
+        generateValue: true     # copy it from the Render dashboard > Environment
+    # Paid plans only: uncomment to keep roastroom.db across deploys
+    # disk:
+    #   name: roastroom-data
+    #   mountPath: /var/data
+    #   sizeGB: 1
+    # and add envVar  DATABASE_PATH=/var/data/roastroom.db

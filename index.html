@@ -1,0 +1,1202 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ROASTROOM · Post your problem. Let the internet make it worse.</title>
+<meta name="description" content="ROASTROOM is an anonymous entertainment platform. Post your problem. Let the internet make it worse.">
+<meta name="theme-color" content="#09090b">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23ff4d2e'/%3E%3Ctext x='16' y='23' font-size='20' font-weight='800' text-anchor='middle' fill='white' font-family='sans-serif'%3ER%3C/text%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#09090b; --bg-2:#0d0d10; --surface:#121215; --surface-2:#18181c; --surface-3:#202026;
+  --line:#26262c; --line-2:#34343c;
+  --text:#f2f2f5; --muted:#9b9ba6; --dim:#6c6c77;
+  --accent:#ff4d2e; --accent-2:#ff9a3d; --grad:linear-gradient(135deg,#ff4d2e 0%,#ff8a3d 100%);
+  --good:#3ddc97; --bad:#ff5d6c; --info:#7aa8ff;
+  --r:12px; --r-sm:8px; --nav-h:62px;
+  --font:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Inter,Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font:15px/1.55 var(--font);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(900px 420px at 18% -8%,rgba(255,77,46,.11),transparent 62%),radial-gradient(700px 380px at 100% 0,rgba(122,168,255,.05),transparent 60%)}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0}
+a{color:inherit;text-decoration:none}
+h1,h2,h3{line-height:1.2;letter-spacing:-.01em}
+:focus-visible{outline:2px solid var(--accent-2);outline-offset:2px;border-radius:6px}
+.ic{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.center{text-align:center}
+.fine{color:var(--dim);font-size:12.5px}
+.ml-auto{margin-left:auto}
+::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-thumb{background:var(--surface-3);border-radius:10px;border:2px solid var(--bg)}
+
+/* ---------- layout ---------- */
+.app{position:relative;z-index:1;display:grid;grid-template-columns:240px minmax(0,1fr) 320px;max-width:1280px;margin:0 auto;gap:0}
+.side-left{position:sticky;top:0;height:100vh;padding:22px 14px 18px;display:flex;flex-direction:column;gap:6px;border-right:1px solid var(--line)}
+.side-right{position:sticky;top:0;align-self:start;height:100vh;overflow:auto;padding:18px 16px;display:flex;flex-direction:column;gap:14px;border-left:1px solid var(--line)}
+.center-col{min-width:0}
+main{padding:18px 20px 120px;max-width:720px;margin:0 auto}
+@media (max-width:1180px){.app{grid-template-columns:220px minmax(0,1fr)}.side-right{display:none}}
+@media (max-width:860px){.app{grid-template-columns:minmax(0,1fr)}.side-left{display:none}main{padding:14px 14px calc(var(--nav-h) + 96px)}}
+
+/* ---------- brand ---------- */
+.brand{display:flex;align-items:center;gap:10px;padding:4px 10px 18px}
+.logo{width:34px;height:34px;border-radius:9px;background:var(--grad);display:grid;place-items:center;font-weight:900;font-size:19px;color:#fff;box-shadow:0 8px 26px -8px rgba(255,77,46,.7)}
+.wordmark{font-weight:900;letter-spacing:.14em;font-size:15px}
+.wordmark b{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+.nav{display:flex;flex-direction:column;gap:2px}
+.nav a{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;color:var(--muted);font-weight:600;position:relative;transition:background .15s,color .15s}
+.nav a:hover{background:var(--surface);color:var(--text)}
+.nav a.active{background:var(--surface-2);color:var(--text)}
+.nav a.active::before{content:"";position:absolute;left:-14px;top:9px;bottom:9px;width:3px;border-radius:0 3px 3px 0;background:var(--grad)}
+.side-left .btn.block{margin:14px 4px 0}
+.me-chip{margin-top:auto;display:flex;align-items:center;gap:10px;padding:10px;border:1px solid var(--line);border-radius:12px;background:var(--surface);width:100%;text-align:left;transition:border-color .15s}
+.me-chip:hover{border-color:var(--line-2)}
+.me-chip .nm{font-weight:700;font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.me-chip .sub{font-size:11.5px;color:var(--dim)}
+.me-chip>div{min-width:0;flex:1}
+
+.bottom-nav{display:none;position:fixed;left:0;right:0;bottom:0;z-index:40;height:calc(var(--nav-h) + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);
+  background:rgba(12,12,14,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line);grid-template-columns:repeat(6,1fr)}
+.bottom-nav a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--dim);font-size:10.5px;font-weight:700;min-width:0}
+.bottom-nav a.active{color:var(--text)}
+.bottom-nav a.active .ic{color:var(--accent)}
+.fab{display:none;position:fixed;right:16px;bottom:calc(var(--nav-h) + 16px + env(safe-area-inset-bottom));z-index:41;width:54px;height:54px;border-radius:16px;background:var(--grad);color:#fff;place-items:center;box-shadow:0 12px 30px -8px rgba(255,77,46,.75);transition:transform .15s}
+.fab:active{transform:scale(.94)}.fab .ic{width:24px;height:24px}
+@media (max-width:860px){.bottom-nav{display:grid}.fab{display:grid}}
+
+.topbar{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:10px;padding:12px 20px;background:rgba(9,9,11,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.topbar .brand{padding:0;display:none}
+.search{position:relative;flex:1;max-width:520px;margin:0 auto}
+.search .ic{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--dim);width:16px;height:16px}
+.search input{width:100%;height:40px;padding:0 44px 0 38px;border-radius:11px;background:var(--surface);border:1px solid var(--line);outline:none;transition:border-color .15s,box-shadow .15s}
+.search input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(255,77,46,.15)}
+.search kbd{position:absolute;right:10px;top:50%;transform:translateY(-50%);font:600 11px var(--mono);color:var(--dim);border:1px solid var(--line-2);border-radius:5px;padding:1px 6px}
+.top-avatar{display:none}
+@media (max-width:860px){.topbar{padding:10px 14px}.topbar .brand{display:flex}.topbar .logo{width:30px;height:30px;font-size:16px}.topbar .wordmark{display:none}.top-avatar{display:block}.search kbd{display:none}.search{margin:0}}
+
+/* ---------- primitives ---------- */
+.card{background:linear-gradient(180deg,var(--surface),var(--bg-2));border:1px solid var(--line);border-radius:var(--r)}
+.eyebrow{font:700 11px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--accent-2)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:40px;padding:0 18px;border-radius:10px;font-weight:700;background:var(--grad);color:#fff;
+  box-shadow:0 8px 24px -10px rgba(255,77,46,.8);transition:transform .12s,box-shadow .2s,filter .2s,opacity .2s;white-space:nowrap}
+.btn:hover{filter:brightness(1.08);box-shadow:0 10px 28px -8px rgba(255,77,46,.9)}
+.btn:active{transform:translateY(1px) scale(.99)}
+.btn.ghost{background:var(--surface-2);border:1px solid var(--line-2);color:var(--text);box-shadow:none}
+.btn.ghost:hover{background:var(--surface-3);filter:none}
+.btn.danger{background:rgba(255,93,108,.12);border:1px solid rgba(255,93,108,.4);color:var(--bad);box-shadow:none}
+.btn.sm{height:32px;padding:0 12px;font-size:13px;border-radius:8px}
+.btn.block{width:100%}
+.btn[disabled],.btn.loading{opacity:.55;pointer-events:none}
+.btn.loading::after{content:"";width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;animation:spin .7s linear infinite}
+.icon-btn{width:36px;height:36px;display:grid;place-items:center;border-radius:10px;color:var(--muted);border:1px solid var(--line);background:var(--surface);transition:color .15s,border-color .15s,background .15s}
+.icon-btn:hover{color:var(--text);border-color:var(--line-2);background:var(--surface-2)}
+.icon-btn.spin .ic{animation:spin .8s linear infinite}
+.input,.textarea{width:100%;padding:11px 13px;border-radius:10px;background:var(--bg);border:1px solid var(--line-2);outline:none;transition:border-color .15s,box-shadow .15s}
+.textarea{resize:vertical;min-height:110px;line-height:1.5}
+.input:focus,.textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(255,77,46,.15)}
+.field{display:grid;gap:6px;margin-bottom:14px}
+.field>label,.field>.lbl{font-size:12.5px;font-weight:700;color:var(--muted);display:flex;justify-content:space-between;gap:10px}
+.counter{font:600 11.5px var(--mono);color:var(--dim)}.counter.warn{color:var(--accent-2)}.counter.over{color:var(--bad)}
+.avatar{--h:20;flex:none;width:30px;height:30px;border-radius:9px;display:inline-grid;place-items:center;font-weight:800;font-size:13px;color:#fff;
+  background:linear-gradient(135deg,hsl(var(--h) 70% 52%),hsl(calc(var(--h) + 40) 70% 38%))}
+.avatar.lg{width:72px;height:72px;border-radius:20px;font-size:30px}.avatar.md{width:40px;height:40px;font-size:16px;border-radius:11px}
+.pill,.tag{display:inline-flex;align-items:center;gap:5px;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:700;background:var(--surface-2);border:1px solid var(--line-2);color:var(--muted)}
+.tag{margin-left:auto}
+.you{font:700 10px var(--mono);letter-spacing:.08em;color:var(--accent-2);border:1px solid rgba(255,154,61,.4);border-radius:5px;padding:0 5px;margin-left:6px}
+
+/* ---------- hero / compose / toolbar ---------- */
+.hero{padding:6px 2px 16px}
+.hero h1{font-size:clamp(26px,5vw,38px);font-weight:900;letter-spacing:-.03em}
+.hero h1 em{font-style:normal;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:var(--muted);margin-top:6px}
+.compose{display:flex;align-items:center;gap:12px;padding:14px;margin-bottom:16px;cursor:pointer;transition:border-color .15s,transform .15s}
+.compose:hover{border-color:var(--line-2);transform:translateY(-1px)}
+.compose .fake{flex:1;color:var(--dim);padding:10px 14px;border-radius:10px;background:var(--bg);border:1px solid var(--line)}
+.toolbar{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.tabs{display:flex;gap:4px;padding:4px;background:var(--surface);border:1px solid var(--line);border-radius:11px;overflow:auto;scrollbar-width:none}
+.tabs button{padding:7px 14px;border-radius:8px;font-weight:700;font-size:13.5px;color:var(--muted);white-space:nowrap;transition:background .15s,color .15s}
+.tabs button:hover{color:var(--text)}.tabs button.on{background:var(--surface-3);color:var(--text)}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:12px;margin-bottom:6px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 13px;border-radius:999px;border:1px solid var(--line-2);background:var(--surface);color:var(--muted);font-size:13px;font-weight:700;white-space:nowrap;cursor:pointer;transition:all .15s}
+.chip:hover{color:var(--text);border-color:var(--dim)}
+.chip.on,.chip:has(input:checked){background:rgba(255,77,46,.13);border-color:rgba(255,77,46,.55);color:#ffb199}
+.chip input{position:absolute;opacity:0;pointer-events:none}
+.chip:has(input:focus-visible){outline:2px solid var(--accent-2);outline-offset:2px}
+.page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:16px}
+.page-head h1{font-size:26px;font-weight:900;letter-spacing:-.02em}
+.page-head p{color:var(--muted);font-size:14px;margin-top:2px}
+
+/* ---------- posts ---------- */
+.post{padding:16px 18px;margin-bottom:12px;transition:border-color .18s,transform .18s,box-shadow .18s;animation:rise .35s both}
+.post:hover{border-color:var(--line-2);transform:translateY(-1px);box-shadow:0 14px 34px -22px #000}
+.post-head{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--dim);flex-wrap:wrap;margin-bottom:10px}
+.post-head .user{display:inline-flex;align-items:center;gap:8px;color:var(--text);font-weight:700;max-width:100%}
+.post-head .user:hover span{text-decoration:underline}
+.post-head .user span{overflow:hidden;text-overflow:ellipsis;max-width:180px;white-space:nowrap}
+.post-main{cursor:pointer;display:block}
+.post-main h3{font-size:18px;font-weight:800;margin-bottom:6px;overflow-wrap:anywhere}
+.post-body{color:#d4d4da;white-space:pre-line;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
+.post-actions{display:flex;align-items:center;gap:4px;margin:12px -6px -6px}
+.act{display:inline-flex;align-items:center;gap:7px;padding:7px 11px;border-radius:9px;color:var(--muted);font-weight:700;font-size:13.5px;transition:background .15s,color .15s}
+.act:hover{background:var(--surface-2);color:var(--text)}
+.act.like.on{color:var(--accent)}.act.like.on .ic{fill:var(--accent)}
+.act.pop .ic{animation:pop .4s}
+.rank{font:800 13px var(--mono);color:var(--dim);min-width:30px}.rank.top{color:var(--accent-2)}
+.score{font:700 11.5px var(--mono);color:var(--accent-2)}
+@media (max-width:520px){.act .lbl{display:none}.post{padding:14px}}
+
+/* ---------- battles ---------- */
+.battle{padding:18px;margin-bottom:14px;animation:rise .35s both}
+.battle h3{font-size:19px;font-weight:800;margin:6px 0 14px}
+.opts{display:grid;gap:10px}
+.opt{position:relative;display:flex;align-items:center;gap:12px;padding:14px;border-radius:11px;border:1px solid var(--line-2);background:var(--bg);text-align:left;overflow:hidden;transition:border-color .15s,transform .12s;width:100%}
+.opt .fill{position:absolute;inset:0 auto 0 0;width:var(--w);background:linear-gradient(90deg,rgba(255,77,46,.20),rgba(255,154,61,.10));transition:width .7s cubic-bezier(.2,.8,.2,1)}
+.opt>*:not(.fill){position:relative}
+.opt:not([disabled]):hover{border-color:var(--accent);transform:translateY(-1px)}
+.opt[disabled]{cursor:default}
+.opt .ab{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;font:800 13px var(--mono);background:var(--surface-3);flex:none}
+.opt.mine{border-color:rgba(255,77,46,.7)}.opt.mine .ab{background:var(--grad);color:#fff}
+.opt .txt{flex:1;font-weight:600;overflow-wrap:anywhere}
+.opt .res{text-align:right;font:700 13px var(--mono)}.opt .res small{display:block;color:var(--dim);font-weight:600;font-size:11px}
+.opt.lead .res b{color:var(--accent-2)}
+.battle-foot{display:flex;justify-content:space-between;gap:10px;margin-top:12px;font-size:13px;color:var(--muted);flex-wrap:wrap}
+.crown{color:var(--accent-2);font-weight:800}
+
+/* ---------- challenge ---------- */
+.challenge-hero{padding:24px;margin-bottom:20px;position:relative;overflow:hidden}
+.challenge-hero::after{content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(255,77,46,.22),transparent 70%);pointer-events:none}
+.ch-prompt{font-size:clamp(22px,4.6vw,30px);font-weight:900;letter-spacing:-.02em;margin:10px 0 18px;position:relative}
+.cd{font-family:var(--mono);color:var(--text)}
+.answer{padding:14px 16px;margin-bottom:10px;animation:rise .3s both}
+.answer .who{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--dim);margin-bottom:6px}
+.answer .who button{color:var(--text);font-weight:700}
+.answer p{font-size:16px;overflow-wrap:anywhere}
+.answer.mine{border-color:rgba(255,77,46,.5)}
+
+/* ---------- leaderboard / profile ---------- */
+.podium{display:grid;grid-template-columns:1fr 1.12fr 1fr;gap:12px;align-items:end;margin-bottom:18px}
+.pod{padding:18px 12px;text-align:center;cursor:pointer;transition:transform .15s,border-color .15s;min-width:0;animation:rise .4s both}
+.pod:hover{transform:translateY(-3px);border-color:var(--line-2)}
+.pod .n{font:900 28px var(--mono);margin-bottom:8px;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.pod.p1{order:2;padding-top:26px;padding-bottom:26px;border-color:rgba(255,154,61,.5);box-shadow:0 18px 44px -26px rgba(255,120,50,.9)}
+.pod.p2{order:1}.pod.p3{order:3}
+.pod .nm{font-weight:800;margin:8px 0 2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pod .pts{font:700 13px var(--mono);color:var(--accent-2)}
+.pod .mini{font-size:11.5px;color:var(--dim);margin-top:4px}
+@media (max-width:560px){.podium{grid-template-columns:1fr}.pod.p1,.pod.p2,.pod.p3{order:0;padding:14px;display:grid;grid-template-columns:auto auto 1fr auto;gap:12px;align-items:center;text-align:left}.pod .n{margin:0;font-size:22px}.pod .nm{margin:0}.pod .mini{display:none}}
+.lrow{display:flex;align-items:center;gap:12px;padding:12px 14px;margin-bottom:8px;cursor:pointer;transition:border-color .15s;animation:rise .3s both}
+.lrow:hover{border-color:var(--line-2)}.lrow.me{border-color:rgba(255,77,46,.5)}
+.lrow .pos{font:800 14px var(--mono);color:var(--dim);width:34px}
+.lrow .nm{font-weight:700;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lrow .st{font-size:12px;color:var(--dim)}
+.lrow .pts{font:800 14px var(--mono);color:var(--accent-2)}
+@media (max-width:520px){.lrow .st{display:none}}
+.profile-head{display:flex;gap:18px;align-items:center;padding:20px;margin-bottom:14px;flex-wrap:wrap}
+.profile-head .info{flex:1;min-width:200px}
+.profile-head h1{font-size:24px;font-weight:900;overflow-wrap:anywhere}
+.profile-head .meta{color:var(--muted);font-size:13.5px;margin-top:4px;display:flex;gap:8px;flex-wrap:wrap}
+.bigscore{text-align:right}.bigscore b{display:block;font:900 34px var(--mono);background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:20px}
+.stat{padding:12px 8px;text-align:center}.stat b{display:block;font:800 20px var(--mono)}.stat span{font-size:11.5px;color:var(--dim);font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+@media (max-width:520px){.stats{grid-template-columns:repeat(3,1fr)}}
+.section-title{font-size:13px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:22px 0 10px}
+
+/* ---------- search ---------- */
+.ucard{display:flex;align-items:center;gap:12px;padding:12px 14px;margin-bottom:8px;cursor:pointer;transition:border-color .15s}
+.ucard:hover{border-color:var(--line-2)}.ucard .nm{font-weight:700}.ucard .st{font-size:12.5px;color:var(--dim)}
+
+/* ---------- ai roast ---------- */
+.terminal{padding:0;overflow:hidden}
+.term-bar{display:flex;align-items:center;gap:8px;padding:11px 14px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.02)}
+.term-bar i{width:10px;height:10px;border-radius:50%;background:var(--surface-3)}
+.term-bar i:first-child{background:#ff5f56}.term-bar i:nth-child(2){background:#ffbd2e}.term-bar i:nth-child(3){background:#27c93f}
+.term-bar span{font:700 12px var(--mono);color:var(--muted);margin-left:8px;letter-spacing:.06em}
+.term-body{padding:18px}
+.seg{display:inline-flex;padding:4px;gap:4px;background:var(--bg);border:1px solid var(--line);border-radius:11px;margin-bottom:14px}
+.seg label{padding:6px 14px;border-radius:8px;font-weight:700;font-size:13px;color:var(--muted);cursor:pointer;transition:all .15s}
+.seg input{position:absolute;opacity:0}
+.seg label:has(input:checked){background:var(--grad);color:#fff}
+.seg label:has(input:focus-visible){outline:2px solid var(--accent-2)}
+.examples{display:flex;gap:8px;flex-wrap:wrap;margin:-4px 0 14px}
+.roast-out{margin-top:18px;padding:18px;border-radius:12px;border:1px solid rgba(255,77,46,.4);background:linear-gradient(180deg,rgba(255,77,46,.08),rgba(255,77,46,.02));animation:rise .3s both}
+.roast-out.safe{border-color:rgba(122,168,255,.45);background:rgba(122,168,255,.06)}
+.roast-text{font-size:19px;font-weight:700;line-height:1.45;white-space:pre-line;overflow-wrap:anywhere;min-height:28px}
+.caret::after{content:"▍";color:var(--accent);animation:blink 1s steps(2) infinite}
+.meter{height:6px;border-radius:99px;background:var(--surface-3);overflow:hidden;margin:14px 0 6px}
+.meter i{display:block;height:100%;width:0;background:var(--grad);border-radius:99px;transition:width 1s cubic-bezier(.2,.8,.2,1)}
+.roast-meta{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font:600 12px var(--mono);color:var(--dim)}
+.thinking{display:flex;align-items:center;gap:10px;color:var(--muted);font:600 13px var(--mono)}
+.dots i{display:inline-block;width:5px;height:5px;margin-right:3px;border-radius:50%;background:var(--accent);animation:bounce 1s infinite}
+.dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}
+
+/* ---------- right rail ---------- */
+.side-card{padding:16px}
+.side-card .eyebrow{display:block;margin-bottom:10px}
+.side-prompt{font-weight:800;font-size:16px;margin-bottom:12px}
+.mini-row{display:flex;align-items:center;gap:10px;padding:6px 0;cursor:pointer}
+.mini-row .pos{font:800 12px var(--mono);color:var(--dim);width:22px}
+.mini-row .nm{flex:1;font-weight:700;font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mini-row .pts{font:700 12px var(--mono);color:var(--accent-2)}
+.mini-bar{display:flex;height:6px;border-radius:99px;overflow:hidden;background:var(--surface-3);margin:8px 0 6px}
+.mini-bar i{display:block;background:var(--grad)}.mini-bar i+i{background:var(--info)}
+.side-link{display:inline-block;margin-top:8px;font-size:13px;font-weight:700;color:var(--accent-2)}
+
+/* ---------- states ---------- */
+.state{padding:38px 22px;text-align:center}
+.state .emoji{font-size:34px;margin-bottom:8px}
+.state h3{font-size:18px;font-weight:800;margin-bottom:4px}
+.state p{color:var(--muted);max-width:380px;margin:0 auto 14px}
+.skel{height:132px;border-radius:var(--r);margin-bottom:12px;border:1px solid var(--line);background:linear-gradient(100deg,var(--surface) 30%,var(--surface-2) 50%,var(--surface) 70%);background-size:300% 100%;animation:shimmer 1.4s infinite linear}
+.offline{position:fixed;top:0;left:0;right:0;z-index:90;display:flex;gap:12px;align-items:center;justify-content:center;padding:10px 14px;background:#2a1215;border-bottom:1px solid rgba(255,93,108,.5);color:#ffc9ce;font-size:13.5px;font-weight:600;text-align:center;flex-wrap:wrap}
+.offline[hidden]{display:none}
+
+/* ---------- modal / toast ---------- */
+.overlay{position:fixed;inset:0;z-index:70;display:grid;place-items:center;padding:16px;background:rgba(5,5,7,.74);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);animation:fade .15s both}
+.modal{width:min(580px,100%);max-height:calc(100dvh - 32px);display:flex;flex-direction:column;box-shadow:0 40px 90px -30px #000;animation:pop-in .22s cubic-bezier(.2,.9,.3,1.1) both}
+.modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;border-bottom:1px solid var(--line)}
+.modal-head h2{font-size:17px;font-weight:800}
+.modal-body{padding:18px;overflow:auto;overscroll-behavior:contain}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:6px}
+.note{font-size:12.5px;color:var(--dim);margin:-6px 0 14px}
+.radio-list{display:grid;gap:8px;margin-bottom:14px}
+.radio-list label{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line-2);border-radius:10px;cursor:pointer;text-transform:capitalize;font-weight:600}
+.radio-list label:has(input:checked){border-color:var(--accent);background:rgba(255,77,46,.08)}
+.radio-list input{accent-color:var(--accent)}
+.thread-post h3{font-size:21px;font-weight:900;margin:10px 0 8px;overflow-wrap:anywhere}
+.thread-post .full{white-space:pre-line;color:#d9d9df;overflow-wrap:anywhere}
+.cmt{display:flex;gap:10px;padding:12px 0;border-top:1px solid var(--line);animation:rise .25s both}
+.cmt .b{flex:1;min-width:0}
+.cmt .h{display:flex;gap:8px;align-items:center;font-size:12.5px;color:var(--dim)}
+.cmt .h button.u{color:var(--text);font-weight:700}
+.cmt .h .rp{margin-left:auto;opacity:.5;padding:2px 4px}.cmt .h .rp:hover{opacity:1;color:var(--bad)}
+.cmt p{white-space:pre-line;overflow-wrap:anywhere;margin-top:2px}
+.cmt-form{position:sticky;bottom:-18px;background:var(--surface);margin:14px -18px -18px;padding:12px 18px;border-top:1px solid var(--line);display:flex;gap:10px;align-items:flex-end}
+.cmt-form textarea{min-height:44px;height:44px;resize:none}
+@media (max-width:600px){.overlay{place-items:end center;padding:0}.modal{width:100%;max-height:92dvh;border-radius:18px 18px 0 0;animation:sheet .26s cubic-bezier(.2,.9,.3,1) both}}
+#toasts{position:fixed;right:16px;bottom:16px;z-index:100;display:grid;gap:8px;width:min(360px,calc(100vw - 32px));pointer-events:none}
+.toast{pointer-events:auto;display:flex;gap:10px;align-items:center;padding:12px 14px;border-radius:12px;background:rgba(24,24,28,.96);border:1px solid var(--line-2);box-shadow:0 18px 40px -16px #000;font-weight:600;font-size:14px;
+  opacity:0;transform:translateY(10px) scale(.98);transition:opacity .22s,transform .22s}
+.toast.in{opacity:1;transform:none}
+.toast::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--good);flex:none;box-shadow:0 0 12px var(--good)}
+.toast.err::before{background:var(--bad);box-shadow:0 0 12px var(--bad)}.toast.info::before{background:var(--info);box-shadow:0 0 12px var(--info)}
+@media (max-width:860px){#toasts{right:50%;transform:translateX(50%);bottom:calc(var(--nav-h) + 84px + env(safe-area-inset-bottom))}}
+body.noscroll{overflow:hidden}
+
+/* ---------- motion ---------- */
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fade{from{opacity:0}}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.4)}100%{transform:scale(1)}}
+@keyframes pop-in{from{opacity:0;transform:translateY(10px) scale(.97)}}
+@keyframes sheet{from{transform:translateY(40px);opacity:0}}
+@keyframes shimmer{to{background-position:-300% 0}}
+@keyframes blink{50%{opacity:0}}
+@keyframes bounce{0%,80%,100%{transform:translateY(0);opacity:.4}40%{transform:translateY(-5px);opacity:1}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+
+<!-- icon sprite -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></symbol>
+  <symbol id="i-trend" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></symbol>
+  <symbol id="i-zap" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+  <symbol id="i-award" viewBox="0 0 24 24"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></symbol>
+  <symbol id="i-cpu" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></symbol>
+  <symbol id="i-msg" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></symbol>
+  <symbol id="i-flag" viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></symbol>
+</defs></svg>
+
+<div class="offline" id="offline" hidden role="alert">
+  <span>Can't reach the ROASTROOM server. Is Flask running? <code>python backend/app.py</code></span>
+  <button class="btn sm ghost" data-action="retry">Retry</button>
+</div>
+
+<div class="app">
+  <aside class="side-left" aria-label="Primary">
+    <a class="brand" href="#/home" aria-label="ROASTROOM home"><span class="logo">R</span><span class="wordmark">ROAST<b>ROOM</b></span></a>
+    <nav class="nav" id="nav-desktop"></nav>
+    <button class="btn block" data-action="open-create"><svg class="ic"><use href="#i-plus"/></svg>Post</button>
+    <button class="me-chip" data-action="open-settings" id="me-chip" aria-label="Your identity"></button>
+  </aside>
+
+  <div class="center-col">
+    <header class="topbar">
+      <a class="brand" href="#/home" aria-label="Home"><span class="logo">R</span></a>
+      <form class="search" role="search" onsubmit="return false">
+        <svg class="ic"><use href="#i-search"/></svg>
+        <input id="search" type="search" placeholder="Search posts, tags, usernames…" autocomplete="off" maxlength="60" aria-label="Search">
+        <kbd>/</kbd>
+      </form>
+      <button class="top-avatar" data-action="open-settings" id="top-avatar" aria-label="Your identity"></button>
+    </header>
+    <main id="view" aria-live="polite"></main>
+  </div>
+
+  <aside class="side-right" id="side-right" aria-label="Highlights"></aside>
+</div>
+
+<nav class="bottom-nav" id="nav-mobile" aria-label="Primary mobile"></nav>
+<button class="fab" data-action="open-create" aria-label="Post"><svg class="ic"><use href="#i-plus"/></svg></button>
+<div id="modal-root"></div>
+<div id="toasts" aria-live="polite"></div>
+
+<script>
+(() => {
+'use strict';
+
+/* =====================================================================
+   CONFIG + UTILITIES
+   ===================================================================== */
+const TAGS = ['College','Dating','Confession','Opinion','Random','Tech','Life','Relationships','Other'];
+const TAG_EMOJI = {College:'🎓',Dating:'💔',Confession:'🤫',Opinion:'🔥',Random:'🎲',Tech:'💻',Life:'🌀',Relationships:'💬',Other:'✨'};
+const REASONS = ['harassment','spam','hate','sexual content','self-harm','violence','other'];
+const SORTS = [['new','New'],['top','Top'],['discussed','Most roasted']];
+const NAV = [
+  ['home','Home','home'],['trending','Trending','trend'],['battles','Battles','zap'],
+  ['challenge','Daily','cal'],['leaderboard','Ranks','award'],['roast','AI Roast','cpu'],
+];
+
+const $  = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+// html`` auto-escapes every interpolation unless it is already Raw. This is the XSS guard for all rendering.
+class Raw { constructor(s) { this.s = s; } }
+const raw = s => new Raw(s);
+const fmt = v => v == null || v === false ? '' : v instanceof Raw ? v.s : Array.isArray(v) ? v.map(fmt).join('') : esc(v);
+const html = (strs, ...vals) => new Raw(strs.reduce((a, s, i) => a + s + (i < vals.length ? fmt(vals[i]) : ''), ''));
+const mount = (el, r) => { if (el) el.innerHTML = r instanceof Raw ? r.s : esc(r); };
+const icon = (n, cls = '') => raw(`<svg class="ic ${cls}" aria-hidden="true"><use href="#i-${n}"/></svg>`);
+
+const store = {
+  get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch {} },
+  del(k) { try { localStorage.removeItem(k); } catch {} },
+};
+const rand = (n, alphabet = 'abcdefghijklmnopqrstuvwxyz0123456789') => {
+  const bytes = new Uint8Array(n);
+  (window.crypto || window.msCrypto) ? crypto.getRandomValues(bytes) : bytes.forEach((_, i) => bytes[i] = Math.random() * 256);
+  return [...bytes].map(b => alphabet[b % alphabet.length]).join('');
+};
+const hue = s => { let h = 0; for (const c of String(s)) h = (h * 31 + c.charCodeAt(0)) % 360; return h; };
+const initial = n => (String(n).replace(/^anonymous_/, '').match(/[A-Za-z0-9]/) || ['?'])[0].toUpperCase();
+const avatar = (n, size = '') => raw(`<span class="avatar ${size}" style="--h:${hue(n)}" aria-hidden="true">${esc(initial(n))}</span>`);
+const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
+
+function timeAgo(iso) {
+  const d = new Date(iso), s = Math.max(0, (Date.now() - d.getTime()) / 1000);
+  if (s < 45) return 'just now';
+  const m = s / 60; if (m < 60) return `${Math.floor(m)}m ago`;
+  const h = m / 60; if (h < 24) return `${Math.floor(h)}h ago`;
+  const dd = h / 24; if (dd < 7) return `${Math.floor(dd)}d ago`;
+  return d.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: d.getFullYear() !== new Date().getFullYear() ? 'numeric' : undefined });
+}
+const joined = iso => new Date(iso).toLocaleDateString(undefined, { month: 'short', year: 'numeric' });
+const debounce = (fn, ms) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; };
+const reduceMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+async function copyText(text) {
+  try { await navigator.clipboard.writeText(text); return true; } catch {}
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.style.cssText = 'position:fixed;opacity:0'; document.body.appendChild(ta); ta.select();
+  let ok = false; try { ok = document.execCommand('copy'); } catch {}
+  ta.remove(); return ok;
+}
+
+/* =====================================================================
+   API  (same-origin first, then http://127.0.0.1:5000 for Live Server / file://)
+   ===================================================================== */
+class ApiError extends Error {
+  constructor(message, status = 0, offline = false, data = null) { super(message); this.status = status; this.offline = offline; this.data = data; this.code = data && data.code; }
+}
+const API = {
+  base: '',
+  async detect() {
+    const custom = window.ROASTROOM_API_BASE || store.get('rr.api');
+    const list = custom ? [custom.replace(/\/$/, '')]
+      : location.protocol === 'file:' ? ['http://127.0.0.1:5000', 'http://localhost:5000'] : ['', 'http://127.0.0.1:5000'];
+    for (const base of list) {
+      const ctrl = new AbortController(), t = setTimeout(() => ctrl.abort(), 2500);
+      try {
+        const r = await fetch(base + '/api/health', { signal: ctrl.signal });
+        const j = await r.json();
+        if (j && j.service === 'roastroom') { this.base = base; UI.setOffline(false); return true; }
+      } catch {} finally { clearTimeout(t); }
+    }
+    this.base = list[0]; UI.setOffline(true); return false;
+  },
+  async request(method, path, body) {
+    const headers = { Accept: 'application/json' };
+    if (body !== undefined) headers['Content-Type'] = 'application/json';
+    if (Identity.token) { headers['X-Username'] = Identity.username; headers['X-Token'] = Identity.token; }
+    const ctrl = new AbortController(), t = setTimeout(() => ctrl.abort(), 12000);
+    let res;
+    try {
+      res = await fetch(this.base + path, { method, headers, signal: ctrl.signal, body: body !== undefined ? JSON.stringify(body) : undefined });
+    } catch (e) {
+      UI.setOffline(true);
+      throw new ApiError(e.name === 'AbortError' ? 'The server took too long to answer.' : "Can't reach the ROASTROOM server.", 0, true);
+    } finally { clearTimeout(t); }
+    UI.setOffline(false);
+    let data = null; try { data = await res.json(); } catch {}
+    if (!res.ok) throw new ApiError((data && data.error) || `Something went wrong (${res.status}).`, res.status, false, data);
+    return data;
+  },
+  get: p => API.request('GET', p),
+  post: (p, b = {}) => API.request('POST', p, b),
+};
+
+/* =====================================================================
+   STATE
+   ===================================================================== */
+const State = { navId: 0, route: 'home', posts: new Map(), battles: new Map(), roastPrefill: null };
+const remember = list => list.forEach(p => State.posts.set(p.id, p));
+
+/* =====================================================================
+   IDENTITY  (pseudonymous, stored in this browser only)
+   ===================================================================== */
+const Identity = {
+  username: '', token: '',
+  load() {
+    this.username = store.get('rr.username') || '';
+    this.token = store.get('rr.token') || '';
+    if (!/^[A-Za-z0-9_]{3,24}$/.test(this.username) || this.token.length < 16) this.reset(false);
+  },
+  reset(save = true) {
+    this.username = 'anonymous_' + rand(6);
+    this.token = rand(40);
+    store.set('rr.username', this.username); store.set('rr.token', this.token);
+    if (save) UI.renderIdentity();
+  },
+  async register() {
+    try { await API.post('/api/identity'); }
+    catch (e) {
+      if (e.code === 'identity_conflict') { this.reset(); await API.post('/api/identity'); } else throw e;
+    }
+  },
+  async rename(name) {
+    const r = await API.post('/api/users/me/rename', { username: name });
+    this.username = r.user.username; store.set('rr.username', this.username); UI.renderIdentity();
+  },
+  isMe: n => String(n).toLowerCase() === Identity.username.toLowerCase(),
+};
+
+/* =====================================================================
+   UI HELPERS  (toasts, modals, states, nav)
+   ===================================================================== */
+const UI = {
+  toast(msg, kind = 'ok', ms = 3200) {
+    const box = $('#toasts');
+    while (box.children.length >= 3) box.firstChild.remove();
+    const el = document.createElement('div');
+    el.className = 'toast ' + kind; el.setAttribute('role', kind === 'err' ? 'alert' : 'status'); el.textContent = msg;
+    box.appendChild(el);
+    requestAnimationFrame(() => el.classList.add('in'));
+    setTimeout(() => { el.classList.remove('in'); setTimeout(() => el.remove(), 260); }, ms);
+  },
+  error(e, fallback = 'Something went wrong.') {
+    if (e && e.status === 429) return this.toast(e.message, 'info', 4200);
+    if (e && e.status === 409) return this.toast(e.message, 'info');
+    this.toast((e && e.message) || fallback, 'err', 4200);
+  },
+  setOffline(flag) { $('#offline').hidden = !flag; },
+  skeletons: n => raw('<div aria-hidden="true">' + '<div class="skel"></div>'.repeat(n) + '</div>'),
+  empty({ emoji = '🫥', title, text = '', action = '', label = '' }) {
+    return html`<div class="card state"><div class="emoji">${emoji}</div><h3>${title}</h3><p>${text}</p>${action ? html`<button class="btn" data-action="${action}">${label}</button>` : ''}</div>`;
+  },
+  errorState(e, action = 'retry') {
+    const off = e && e.offline;
+    return this.empty({ emoji: off ? '🔌' : '💥', title: off ? 'Server unreachable' : 'That broke',
+      text: off ? "Start the backend with python backend/app.py, then retry." : ((e && e.message) || 'Something went wrong.'), action, label: 'Try again' });
+  },
+  renderIdentity() {
+    const n = Identity.username;
+    mount($('#me-chip'), html`${avatar(n, 'md')}<div><div class="nm">${n}</div><div class="sub">Anonymous · tap to edit</div></div>${icon('edit')}`);
+    mount($('#top-avatar'), avatar(n, 'md'));
+    Nav.render();
+  },
+};
+
+const Modal = {
+  stack: [],
+  open({ title, body, label }) {
+    const prev = document.activeElement;
+    const wrap = document.createElement('div');
+    wrap.className = 'overlay';
+    wrap.innerHTML = `<div class="modal card" role="dialog" aria-modal="true" aria-label="${esc(label || title)}">
+      <div class="modal-head"><h2>${esc(title)}</h2><button class="icon-btn" data-action="close-modal" aria-label="Close"><svg class="ic"><use href="#i-x"/></svg></button></div>
+      <div class="modal-body"></div></div>`;
+    mount($('.modal-body', wrap), body);
+    wrap.addEventListener('mousedown', e => { if (e.target === wrap) this.close(); });
+    $('#modal-root').appendChild(wrap);
+    document.body.classList.add('noscroll');
+    this.stack.push({ wrap, prev });
+    const first = $('input:not([type=radio]),textarea', wrap) || $('[data-action="close-modal"]', wrap);
+    setTimeout(() => first && first.focus({ preventScroll: true }), 30);
+    return wrap;
+  },
+  top: () => Modal.stack[Modal.stack.length - 1]?.wrap,
+  setBody(body) { const w = this.top(); if (w) mount($('.modal-body', w), body); },
+  close() {
+    const m = this.stack.pop(); if (!m) return;
+    m.wrap.remove();
+    if (!this.stack.length) document.body.classList.remove('noscroll');
+    try { m.prev && m.prev.focus && m.prev.focus({ preventScroll: true }); } catch {}
+  },
+  closeAll() { while (this.stack.length) this.close(); },
+};
+
+const Nav = {
+  render() {
+    const me = Identity.username;
+    const items = [...NAV];
+    mount($('#nav-desktop'), html`${items.map(([k, l, i]) => html`<a href="#/${k}" data-nav="${k}">${icon(i)}<span>${l}</span></a>`)}<a href="#/u/${me}" data-nav="u">${icon('user')}<span>Profile</span></a>`);
+    mount($('#nav-mobile'), html`${items.map(([k, l, i]) => html`<a href="#/${k}" data-nav="${k}">${icon(i)}<span>${k === 'roast' ? 'Roast' : l}</span></a>`)}`);
+    this.mark(State.route);
+  },
+  mark(route) {
+    $$('[data-nav]').forEach(a => { const on = a.dataset.nav === route; a.classList.toggle('active', on); on ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current'); });
+  },
+};
+
+/* =====================================================================
+   POSTS  (feed, cards, create)
+   ===================================================================== */
+const postCard = (p, o = {}) => html`
+<article class="post card" data-post="${p.id}" style="animation-delay:${Math.min(o.i || 0, 8) * 30}ms">
+  <header class="post-head">
+    ${o.rank ? html`<span class="rank ${o.rank <= 3 ? 'top' : ''}">#${o.rank}</span>` : ''}
+    <button class="user" data-action="profile" data-user="${p.username}">${avatar(p.username)}<span>${p.username}</span></button>
+    ${Identity.isMe(p.username) ? html`<span class="you">YOU</span>` : ''}
+    <span>·</span><time datetime="${p.created_at}" title="${new Date(p.created_at).toLocaleString()}">${timeAgo(p.created_at)}</time>
+    ${o.score != null ? html`<span class="score">🔥 ${o.score}</span>` : ''}
+    <span class="tag">${TAG_EMOJI[p.tag] || ''} ${p.tag}</span>
+  </header>
+  <div class="post-main" data-action="comments" data-id="${p.id}" role="link" tabindex="0" aria-label="Open thread: ${p.title}">
+    <h3>${p.title}</h3><p class="post-body">${p.body}</p>
+  </div>
+  <footer class="post-actions">
+    <button class="act like ${p.liked ? 'on' : ''}" data-action="like" data-id="${p.id}" data-like-btn="${p.id}" aria-pressed="${String(p.liked)}" aria-label="Like">${icon('heart')}<span>${p.likes}</span></button>
+    <button class="act" data-action="comments" data-id="${p.id}" aria-label="Comments">${icon('msg')}<span data-comment-count="${p.id}">${p.comments}</span></button>
+    <button class="act" data-action="roast-post" data-id="${p.id}" aria-label="AI roast this post">${icon('cpu')}<span class="lbl">Roast</span></button>
+    <button class="act" data-action="share" data-id="${p.id}" aria-label="Share">${icon('share')}<span class="lbl">Share</span></button>
+    <button class="act ml-auto" data-action="report" data-type="post" data-key="${p.id}" aria-label="Report post">${icon('flag')}</button>
+  </footer>
+</article>`;
+
+const postList = (posts, opts = {}) => html`${posts.map((p, i) => postCard(p, { i, ...(opts.rank ? { rank: p.rank, score: p.score } : {}) }))}`;
+
+function syncPost(p) {
+  $$(`[data-like-btn="${p.id}"]`).forEach(b => {
+    b.classList.toggle('on', p.liked); b.setAttribute('aria-pressed', String(p.liked));
+    const s = $('span', b); if (s) s.textContent = p.likes;
+  });
+  $$(`[data-comment-count="${p.id}"]`).forEach(s => s.textContent = p.comments);
+}
+
+const Feed = {
+  sort: 'new', tag: '', offset: 0, seq: 0,
+  async load(reset = true) {
+    const seq = ++this.seq, box = $('#feed'); if (!box) return;
+    const btn = $('#refresh-btn'); btn && btn.classList.add('spin');
+    if (reset) { this.offset = 0; mount(box, UI.skeletons(3)); mount($('#feed-more'), ''); }
+    try {
+      const q = new URLSearchParams({ sort: this.sort, limit: '15', offset: String(this.offset) });
+      if (this.tag) q.set('tag', this.tag);
+      const r = await API.get('/api/posts?' + q);
+      if (seq !== this.seq || !$('#feed')) return;
+      remember(r.posts);
+      if (reset) mount(box, r.posts.length ? postList(r.posts) : UI.empty({ emoji: '🦗', title: this.tag ? `No ${this.tag} posts yet` : 'The room is quiet',
+        text: 'Be the first to post and let the internet make it worse.', action: 'open-create', label: 'Post' }));
+      else box.insertAdjacentHTML('beforeend', postList(r.posts).s);
+      this.offset += r.posts.length;
+      mount($('#feed-more'), r.has_more ? html`<div class="center"><button class="btn ghost" data-action="load-more">Load more</button></div>`
+        : (this.offset ? html`<p class="fine center" style="margin-top:14px">That's the whole room. Go post something.</p>` : ''));
+    } catch (e) {
+      if (seq === this.seq && $('#feed')) mount(reset ? box : $('#feed-more'), UI.errorState(e, 'feed-retry'));
+    } finally { if (seq === this.seq) $('#refresh-btn')?.classList.remove('spin'); }
+  },
+};
+
+const Likes = {
+  async toggle(id, btn) {
+    const p = State.posts.get(id); if (!p || btn.dataset.busy) return;
+    btn.dataset.busy = '1';
+    const prev = { liked: p.liked, likes: p.likes };
+    p.liked = !p.liked; p.likes += p.liked ? 1 : -1; syncPost(p);
+    if (p.liked) { btn.classList.add('pop'); setTimeout(() => btn.classList.remove('pop'), 420); }
+    try { const r = await API.post(`/api/posts/${id}/like`); p.liked = r.liked; p.likes = r.likes; syncPost(p); }
+    catch (e) { Object.assign(p, prev); syncPost(p); UI.error(e); }
+    finally { delete btn.dataset.busy; }
+  },
+};
+
+const Posts = {
+  openCreate(prefill = {}) {
+    Modal.open({ title: 'Post your problem', body: html`
+    <form data-form="create-post" novalidate>
+      <div class="field"><label for="f-title">Title <span class="counter" data-counter="f-title" data-max="120">0/120</span></label>
+        <input id="f-title" name="title" class="input" maxlength="120" placeholder="What went wrong?" autocomplete="off" value="${prefill.title || ''}" required></div>
+      <div class="field"><label for="f-body">The story <span class="counter" data-counter="f-body" data-max="2000">0/2000</span></label>
+        <textarea id="f-body" name="body" class="textarea" maxlength="2000" placeholder="Tell us everything. We promise to be supportive (we won't)." required>${prefill.body || ''}</textarea></div>
+      <div class="field"><span class="lbl">Tag</span>
+        <div class="chips" style="flex-wrap:wrap;margin:0;padding:0">${TAGS.map(t => html`<label class="chip"><input type="radio" name="tag" value="${t}" ${t === (prefill.tag || 'Random') ? 'checked' : ''}>${TAG_EMOJI[t]} ${t}</label>`)}</div></div>
+      <p class="note">You're posting as <b>${Identity.username}</b>. No names, phone numbers or emails, please.</p>
+      <div class="modal-actions"><button type="button" class="btn ghost" data-action="close-modal">Cancel</button><button class="btn" type="submit">Post it 🔥</button></div>
+    </form>` });
+    $$('[data-counter]', Modal.top()).forEach(c => updateCounter($('#' + c.dataset.counter)));
+  },
+  async submit(form) {
+    const f = new FormData(form), title = (f.get('title') || '').trim(), body = (f.get('body') || '').trim(), tag = f.get('tag') || 'Other';
+    if (title.length < 3) return UI.toast('Give your post a title (3+ characters).', 'err');
+    if (body.length < 5) return UI.toast('Tell us the story first.', 'err');
+    const btn = $('button[type=submit]', form); btn.classList.add('loading');
+    try {
+      const r = await API.post('/api/posts', { title, body, tag });
+      remember([r.post]); Modal.close(); UI.toast('Post published 🔥');
+      Side.render();
+      if (State.route === 'home') { Feed.sort = 'new'; Feed.tag = ''; renderHome($('#view'), { alive: () => true }); } else location.hash = '#/home';
+    } catch (e) { UI.error(e); } finally { btn.classList.remove('loading'); }
+  },
+};
+
+/* =====================================================================
+   COMMENTS  (thread modal)
+   ===================================================================== */
+const cmtHtml = c => html`<div class="cmt" data-comment="${c.id}">${avatar(c.username)}<div class="b">
+  <div class="h"><button class="u" data-action="profile" data-user="${c.username}">${c.username}</button>${Identity.isMe(c.username) ? html`<span class="you">YOU</span>` : ''}<span>·</span><time title="${new Date(c.created_at).toLocaleString()}">${timeAgo(c.created_at)}</time>
+  <button class="rp" data-action="report" data-type="comment" data-key="${c.id}" aria-label="Report comment">${icon('flag')}</button></div>
+  <p>${c.body}</p></div></div>`;
+
+const Comments = {};
+Comments.open = async function (id) {
+  Modal.open({ title: 'Thread', body: UI.skeletons(2) });
+  try {
+    const [pr, cr] = await Promise.all([API.get(`/api/posts/${id}`), API.get(`/api/posts/${id}/comments`)]);
+    const p = pr.post; State.posts.set(p.id, p); syncPost(p);
+    Modal.setBody(html`
+      <div class="thread-post">
+        <div class="post-head" style="margin-bottom:0"><button class="user" data-action="profile" data-user="${p.username}" style="display:inline-flex;align-items:center;gap:8px;color:var(--text);font-weight:700">${avatar(p.username)}<span>${p.username}</span></button><span>·</span><time>${timeAgo(p.created_at)}</time><span class="tag">${TAG_EMOJI[p.tag] || ''} ${p.tag}</span></div>
+        <h3>${p.title}</h3><p class="full">${p.body}</p>
+        <div class="post-actions" style="margin-top:10px">
+          <button class="act like ${p.liked ? 'on' : ''}" data-action="like" data-id="${p.id}" data-like-btn="${p.id}" aria-pressed="${String(p.liked)}">${icon('heart')}<span>${p.likes}</span></button>
+          <button class="act" data-action="roast-post" data-id="${p.id}">${icon('cpu')}<span>AI Roast</span></button>
+          <button class="act" data-action="share" data-id="${p.id}">${icon('share')}<span class="lbl">Share</span></button>
+          <button class="act ml-auto" data-action="report" data-type="post" data-key="${p.id}" aria-label="Report post">${icon('flag')}</button>
+        </div>
+      </div>
+      <div class="section-title" style="margin-top:14px"><span data-comment-count="${p.id}">${p.comments}</span> comments</div>
+      <div id="cmt-list">${cr.comments.length ? cr.comments.map(cmtHtml) : html`<p class="fine" id="cmt-empty" style="padding:14px 0">No roasts yet. Be the first to make it worse.</p>`}</div>
+      <form class="cmt-form" data-form="comment" data-id="${p.id}" novalidate>
+        <textarea name="body" class="textarea" maxlength="500" placeholder="Add your roast…" aria-label="Your comment" rows="1"></textarea>
+        <button class="btn" type="submit">Roast</button>
+      </form>`);
+  } catch (e) {
+    Modal.setBody(UI.empty({ emoji: e.status === 404 ? '🪦' : '💥', title: e.status === 404 ? 'This post is gone' : 'Couldn\'t load the thread', text: e.message }));
+  }
+};
+Comments.submit = async function (form) {
+  const id = Number(form.dataset.id), ta = $('textarea', form), body = ta.value.trim();
+  if (!body) return UI.toast("Say something first. Empty roasts don't land.", 'err');
+  const btn = $('button', form); btn.classList.add('loading');
+  try {
+    const r = await API.post(`/api/posts/${id}/comments`, { body });
+    $('#cmt-empty')?.remove();
+    $('#cmt-list').insertAdjacentHTML('beforeend', cmtHtml(r.comment).s);
+    ta.value = ''; ta.focus();
+    const p = State.posts.get(id); if (p) { p.comments = r.count; syncPost(p); }
+    UI.toast('Comment posted.');
+    const m = $('.modal-body', Modal.top()); m.scrollTo({ top: m.scrollHeight, behavior: reduceMotion() ? 'auto' : 'smooth' });
+  } catch (e) { UI.error(e); } finally { btn.classList.remove('loading'); }
+};
+
+/* =====================================================================
+   SHARING
+   ===================================================================== */
+const Share = {
+  url: id => (location.origin && location.origin !== 'null' ? location.origin + location.pathname : location.href.split('#')[0].split('?')[0]) + '?post=' + id,
+  async post(id) {
+    const p = State.posts.get(id); if (!p) return;
+    const data = { title: 'ROASTROOM', text: `"${p.title}" on ROASTROOM`, url: this.url(id) };
+    if (navigator.share) { try { await navigator.share(data); return; } catch (e) { if (e.name === 'AbortError') return; } }
+    UI.toast((await copyText(`${data.text}\n${data.url}`)) ? 'Link copied 📋' : 'Couldn\'t copy. Long-press the address bar instead.', 'info');
+  },
+};
+
+/* =====================================================================
+   TRENDING
+   ===================================================================== */
+async function renderTrending(view, ctx) {
+  mount(view, html`<div class="page-head"><div><h1>🔥 TRENDING</h1><p>Ranked by likes ×3 + comments ×5 + freshness bonus.</p></div><button class="icon-btn" id="refresh-btn" data-action="trend-refresh" aria-label="Refresh trending">${icon('refresh')}</button></div><div id="trend-box">${UI.skeletons(3)}</div>`);
+  try {
+    const r = await API.get('/api/trending');
+    if (!ctx.alive()) return;
+    remember(r.posts);
+    mount($('#trend-box'), r.posts.length ? postList(r.posts, { rank: true }) : UI.empty({ emoji: '📉', title: 'Nothing is trending', text: 'Post something spicy to start a fire.', action: 'open-create', label: 'Post' }));
+  } catch (e) { if (ctx.alive()) mount($('#trend-box'), UI.errorState(e, 'retry')); }
+}
+
+/* =====================================================================
+   ROAST BATTLES
+   ===================================================================== */
+const battleCard = b => {
+  const voted = !!b.my_vote;
+  const opt = k => html`<button class="opt ${b.my_vote === k ? 'mine' : ''} ${b.winner === k ? 'lead' : ''}" style="--w:${b[k].percent}%" data-action="vote" data-id="${b.id}" data-choice="${k}" ${voted ? 'disabled' : ''} aria-label="Vote ${k.toUpperCase()}: ${b[k].text}">
+    <span class="fill"></span><span class="ab">${b.my_vote === k ? '✓' : k.toUpperCase()}</span><span class="txt">${b[k].text}</span>
+    <span class="res"><b>${b[k].percent}%</b><small>${plural(b[k].votes, 'vote')}</small></span></button>`;
+  const status = b.winner === null ? 'No votes yet. Be the first.' : b.winner === 'tie' ? 'Dead heat 🤝' : html`<span class="crown">👑 Winning: Option ${b.winner.toUpperCase()}</span>`;
+  return html`<article class="battle card" data-battle="${b.id}"><span class="eyebrow">Roast battle</span><h3>${b.prompt}</h3>
+    <div class="opts">${opt('a')}${opt('b')}</div>
+    <div class="battle-foot"><span>${status}</span><span>${plural(b.total, 'vote')} total${b.author ? html` · by ${b.author}` : ''}</span></div>
+    ${voted ? '' : html`<p class="fine" style="margin-top:6px">Tap an option to vote. One vote per battle.</p>`}</article>`;
+};
+
+const Battles = {
+  async vote(id, choice) {
+    try {
+      const r = await API.post(`/api/battles/${id}/vote`, { choice });
+      State.battles.set(r.battle.id, r.battle);
+      $$(`[data-battle="${id}"]`).forEach(el => el.outerHTML = battleCard(r.battle).s);
+      UI.toast('Vote counted.'); Side.render();
+    } catch (e) {
+      if (e.status === 409) { try { const j = await API.get('/api/battles'); j.battles.forEach(b => State.battles.set(b.id, b)); const b = State.battles.get(id); if (b) $$(`[data-battle="${id}"]`).forEach(el => el.outerHTML = battleCard(b).s); } catch {} }
+      UI.error(e);
+    }
+  },
+  openCreate() {
+    Modal.open({ title: 'Start a roast battle', body: html`
+    <form data-form="battle" novalidate>
+      <div class="field"><label for="b-q">Question <span class="counter" data-counter="b-q" data-max="120">0/120</span></label><input id="b-q" name="prompt" class="input" maxlength="120" value="What's worse?" required></div>
+      <div class="field"><label for="b-a">Option A <span class="counter" data-counter="b-a" data-max="80">0/80</span></label><input id="b-a" name="option_a" class="input" maxlength="80" placeholder="Getting left on read" autocomplete="off" required></div>
+      <div class="field"><label for="b-b">Option B <span class="counter" data-counter="b-b" data-max="80">0/80</span></label><input id="b-b" name="option_b" class="input" maxlength="80" placeholder='Getting a "k"' autocomplete="off" required></div>
+      <div class="modal-actions"><button type="button" class="btn ghost" data-action="close-modal">Cancel</button><button class="btn" type="submit">Start battle ⚡</button></div>
+    </form>` });
+    $$('[data-counter]', Modal.top()).forEach(c => updateCounter($('#' + c.dataset.counter)));
+  },
+  async submit(form) {
+    const f = new FormData(form), body = { prompt: (f.get('prompt') || '').trim(), option_a: (f.get('option_a') || '').trim(), option_b: (f.get('option_b') || '').trim() };
+    if (!body.option_a || !body.option_b) return UI.toast('Both options are required.', 'err');
+    const btn = $('button[type=submit]', form); btn.classList.add('loading');
+    try { await API.post('/api/battles', body); Modal.close(); UI.toast('Battle is live ⚡'); if (State.route === 'battles') renderBattles($('#view'), { alive: () => true }); else location.hash = '#/battles'; }
+    catch (e) { UI.error(e); } finally { btn.classList.remove('loading'); }
+  },
+};
+
+async function renderBattles(view, ctx) {
+  mount(view, html`<div class="page-head"><div><h1>⚡ Roast Battles</h1><p>Pick your poison. Majority rules.</p></div><button class="btn sm" data-action="new-battle">${icon('plus')}New battle</button></div><div id="battle-box">${UI.skeletons(2)}</div>`);
+  try {
+    const r = await API.get('/api/battles');
+    if (!ctx.alive()) return;
+    r.battles.forEach(b => State.battles.set(b.id, b));
+    mount($('#battle-box'), r.battles.length ? html`${r.battles.map(battleCard)}` : UI.empty({ emoji: '🥊', title: 'No battles yet', text: 'Start one. People love picking sides.', action: 'new-battle', label: 'Start a battle' }));
+  } catch (e) { if (ctx.alive()) mount($('#battle-box'), UI.errorState(e, 'retry')); }
+}
+
+/* =====================================================================
+   DAILY CHALLENGE
+   ===================================================================== */
+const answerHtml = (a, i = 0) => html`<div class="answer card ${Identity.isMe(a.username) ? 'mine' : ''}" style="animation-delay:${Math.min(i, 8) * 30}ms"><div class="who">${avatar(a.username)}<button data-action="profile" data-user="${a.username}">${a.username}</button>${Identity.isMe(a.username) ? html`<span class="you">YOU</span>` : ''}<span>·</span><span>${timeAgo(a.created_at)}</span></div><p>${a.answer}</p></div>`;
+const wordCount = s => (s.trim().match(/\S+/g) || []).length;
+
+const Challenge = {
+  timer: null, data: null,
+  async render(view, ctx) {
+    mount(view, html`<div class="page-head"><div><h1>📅 Daily Challenge</h1><p>One prompt a day. One shot. Make it count.</p></div></div>${UI.skeletons(2)}`);
+    try {
+      const r = await API.get('/api/challenges');
+      if (!ctx.alive()) return;
+      this.data = r.challenge; this.paint(view);
+    } catch (e) { if (ctx.alive()) mount(view, UI.errorState(e, 'retry')); }
+  },
+  paint(view) {
+    const c = this.data;
+    mount(view, html`<div class="page-head"><div><h1>📅 Daily Challenge</h1><p>One prompt a day. One shot. Make it count.</p></div></div>
+    <section class="card challenge-hero">
+      <span class="eyebrow">Resets in <span class="cd" id="cd">--:--:--</span></span>
+      <h2 class="ch-prompt">${c.prompt}</h2>
+      ${c.my_answer ? html`<div class="answer card mine" style="margin:0"><div class="who"><span>Your answer</span></div><p>${c.my_answer}</p></div><p class="fine" style="margin-top:10px">Locked in. Come back tomorrow for a fresh disaster.</p>`
+      : html`<form data-form="challenge" novalidate>
+          <div class="field" style="margin-bottom:10px"><label class="sr" for="ch-answer">Your answer</label>
+            <textarea id="ch-answer" name="answer" class="textarea" style="min-height:84px" maxlength="200" placeholder="Type your answer…" data-max-words="${c.max_words}" required></textarea></div>
+          <div class="modal-actions" style="align-items:center;justify-content:space-between"><span class="counter" id="ch-count">0/${c.max_words} words</span><button class="btn" type="submit">Submit answer</button></div>
+        </form>`}
+    </section>
+    <div class="section-title">${plural(c.total, 'response')} today</div>
+    <div id="ch-list">${c.responses.length ? html`${c.responses.map(answerHtml)}` : UI.empty({ emoji: '🎤', title: 'No answers yet', text: 'Be the first to set the bar embarrassingly low.' })}</div>`);
+    this.tick(); clearInterval(this.timer); this.timer = setInterval(() => this.tick(), 1000);
+    Router.onLeave(() => clearInterval(this.timer));
+  },
+  tick() {
+    const el = $('#cd'); if (!el || !this.data) return;
+    let s = Math.max(0, Math.floor((new Date(this.data.ends_at) - Date.now()) / 1000));
+    const p = n => String(n).padStart(2, '0');
+    el.textContent = `${p(Math.floor(s / 3600))}:${p(Math.floor(s % 3600 / 60))}:${p(s % 60)}`;
+  },
+  async submit(form) {
+    const ta = $('textarea', form), answer = ta.value.trim(), max = this.data.max_words;
+    if (answer.length < 2) return UI.toast('Write an answer first.', 'err');
+    if (wordCount(answer) > max) return UI.toast(`Too wordy. ${max} words max.`, 'err');
+    const btn = $('button[type=submit]', form); btn.classList.add('loading');
+    try { const r = await API.post('/api/challenges', { answer }); this.data = r.challenge; this.paint($('#view')); UI.toast('Roast landed 💀'); Side.render(); }
+    catch (e) { UI.error(e); if (e.status === 409) this.render($('#view'), { alive: () => State.route === 'challenge' }); } finally { btn.classList.remove('loading'); }
+  },
+};
+
+/* =====================================================================
+   LEADERBOARD
+   ===================================================================== */
+const statLine = u => `${u.posts} posts · ${u.likes} likes · ${u.comments} comments`;
+async function renderLeaderboard(view, ctx) {
+  mount(view, html`<div class="page-head"><div><h1>🏆 Leaderboard</h1><p>Score = likes×3 + posts×5 + comments×2 + battle votes + challenges×3.</p></div></div>${UI.skeletons(3)}`);
+  try {
+    const { users } = await API.get('/api/leaderboard?limit=30');
+    if (!ctx.alive()) return;
+    const top = users.slice(0, 3), rest = users.slice(3);
+    mount(view, html`<div class="page-head"><div><h1>🏆 Leaderboard</h1><p>Score = likes×3 + posts×5 + comments×2 + battle votes + challenges×3.</p></div></div>
+    ${users.length ? html`
+      <div class="podium">${top.map((u, i) => html`<div class="pod card p${i + 1}" data-action="profile" data-user="${u.username}" role="link" tabindex="0" style="animation-delay:${i * 80}ms">
+        <div class="n">#${u.rank}</div>${avatar(u.username, 'md')}<div class="nm">${u.username}${Identity.isMe(u.username) ? html`<span class="you">YOU</span>` : ''}</div>
+        <div class="pts">${u.roast_score} pts</div><div class="mini">${statLine(u)}</div></div>`)}</div>
+      ${rest.map((u, i) => html`<div class="lrow card ${Identity.isMe(u.username) ? 'me' : ''}" data-action="profile" data-user="${u.username}" role="link" tabindex="0" style="animation-delay:${i * 25}ms">
+        <span class="pos">#${u.rank}</span>${avatar(u.username)}<span class="nm">${u.username}${Identity.isMe(u.username) ? html`<span class="you">YOU</span>` : ''}</span><span class="st">${statLine(u)}</span><span class="pts">${u.roast_score}</span></div>`)}`
+      : UI.empty({ emoji: '🏁', title: 'Nobody is on the board', text: 'Post, comment, or vote to claim #1.', action: 'open-create', label: 'Post' })}`);
+  } catch (e) { if (ctx.alive()) mount(view, UI.errorState(e, 'retry')); }
+}
+
+/* =====================================================================
+   PROFILES
+   ===================================================================== */
+async function renderProfile(view, ctx) {
+  const name = ctx.arg === 'me' || !ctx.arg ? Identity.username : ctx.arg;
+  mount(view, UI.skeletons(2));
+  try {
+    const { user: u, posts } = await API.get('/api/users/' + encodeURIComponent(name));
+    if (!ctx.alive()) return;
+    remember(posts);
+    const me = Identity.isMe(u.username);
+    document.title = `${u.username} · ROASTROOM`;
+    mount(view, html`
+    <section class="card profile-head">${avatar(u.username, 'lg')}
+      <div class="info"><h1>${u.username}${me ? html`<span class="you">YOU</span>` : ''}</h1>
+        <div class="meta"><span>Joined ${joined(u.joined)}</span>${u.rank ? html`<span class="pill">🏆 Rank #${u.rank}</span>` : ''}</div>
+        <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">${me ? html`<button class="btn sm ghost" data-action="open-settings">${icon('edit')}Edit username</button>` : html`<button class="btn sm ghost" data-action="report" data-type="user" data-key="${u.username}">${icon('flag')}Report user</button>`}</div></div>
+      <div class="bigscore"><b>${u.roast_score}</b><span class="fine">roast score</span></div></section>
+    <div class="stats">${[['posts', 'Posts'], ['likes', 'Likes'], ['comments', 'Comments'], ['battles', 'Battles'], ['challenges', 'Daily']].map(([k, l]) => html`<div class="stat card"><b>${u[k]}</b><span>${l}</span></div>`)}</div>
+    <div class="section-title">Recent posts</div>
+    ${posts.length ? postList(posts) : UI.empty({ emoji: '🌱', title: me ? "You haven't posted yet" : 'No posts yet', text: me ? 'Your first embarrassing story is waiting.' : 'This user is lurking.', action: me ? 'open-create' : '', label: 'Post' })}`);
+  } catch (e) {
+    if (!ctx.alive()) return;
+    mount(view, e.status === 404 ? UI.empty({ emoji: '👻', title: 'User not found', text: `Nobody here goes by "${name}".`, action: 'go-home', label: 'Back home' }) : UI.errorState(e, 'retry'));
+  }
+}
+
+/* =====================================================================
+   SEARCH  (debounced)
+   ===================================================================== */
+const Search = {
+  seq: 0,
+  input: debounce(q => Search.go(q), 320),
+  go(q) {
+    q = q.trim();
+    if (q.length < 2) { if (State.route === 'search') { history.replaceState(null, '', '#/search'); this.render($('#view'), '', () => State.route === 'search'); } return; }
+    const target = '#/search?q=' + encodeURIComponent(q);
+    if (State.route === 'search') { history.replaceState(null, '', target); this.render($('#view'), q, () => State.route === 'search'); }
+    else location.hash = target;
+  },
+  async render(view, q, alive) {
+    const seq = ++this.seq;
+    if (q.length < 2) return mount(view, html`<div class="page-head"><div><h1>Search</h1><p>Type at least 2 characters.</p></div></div>${UI.empty({ emoji: '🔎', title: 'Search the chaos', text: 'Find posts by title, story, tag, or username.' })}`);
+    mount(view, html`<div class="page-head"><div><h1>Results for “${q}”</h1></div></div>${UI.skeletons(2)}`);
+    try {
+      const r = await API.get('/api/search?q=' + encodeURIComponent(q));
+      if (seq !== this.seq || !alive()) return;
+      remember(r.posts);
+      mount(view, html`<div class="page-head"><div><h1>Results for “${r.q}”</h1><p>${plural(r.posts.length, 'post')} · ${plural(r.users.length, 'user')}</p></div></div>
+        ${!r.posts.length && !r.users.length ? UI.empty({ emoji: '🕳️', title: 'Nothing matched', text: "The internet hasn't ruined that yet. Try another word, or post it yourself.", action: 'open-create', label: 'Post' }) : html`
+        ${r.users.length ? html`<div class="section-title" style="margin-top:0">Users</div>${r.users.map(u => html`<div class="ucard card" data-action="profile" data-user="${u.username}" role="link" tabindex="0">${avatar(u.username, 'md')}<div><div class="nm">${u.username}</div><div class="st">${statLine(u)}</div></div></div>`)}` : ''}
+        ${r.posts.length ? html`<div class="section-title">Posts</div>${postList(r.posts)}` : ''}`}`);
+    } catch (e) { if (seq === this.seq && alive()) mount(view, UI.errorState(e, 'retry')); }
+  },
+};
+
+/* =====================================================================
+   AI ROAST
+   ===================================================================== */
+const EXAMPLES = ['I studied for 5 hours and still failed.', 'She left me on seen for 3 days.', 'I pushed to main on a Friday.', 'I waved back at someone who was not waving at me.'];
+const Roast = {
+  typing: null,
+  render(view) {
+    const pre = State.roastPrefill; State.roastPrefill = null;
+    mount(view, html`<div class="page-head"><div><h1>🤖 AI Roast</h1><p>Paste your problem. Get verbally disassembled. Free, local, zero API credits.</p></div></div>
+    <section class="card terminal"><div class="term-bar"><i></i><i></i><i></i><span>ROAST.AI · local engine</span></div>
+    <form class="term-body" data-form="roast" novalidate>
+      <div class="field"><label for="r-text">Your story <span class="counter" data-counter="r-text" data-max="500">0/500</span></label>
+        <textarea id="r-text" name="text" class="textarea" maxlength="500" placeholder="I studied for 5 hours and still failed…"></textarea></div>
+      <div class="examples">${EXAMPLES.map(t => html`<button type="button" class="chip" data-action="example" data-text="${t}">${t}</button>`)}</div>
+      <div class="seg" role="radiogroup" aria-label="Intensity">${['mild', 'medium', 'spicy'].map(l => html`<label><input type="radio" name="intensity" value="${l}" ${l === 'medium' ? 'checked' : ''}>${l === 'mild' ? '🙂' : l === 'medium' ? '😏' : '🌶️'} ${l[0].toUpperCase() + l.slice(1)}</label>`)}</div>
+      <button class="btn block" type="submit">${icon('cpu')}Roast me</button>
+      <div id="roast-out" aria-live="polite"></div>
+      <p class="fine" style="margin-top:14px">Roasts target situations and decisions, never identities. Entertainment only.</p>
+    </form></section>`);
+    const ta = $('#r-text');
+    if (pre) { ta.value = pre.text; updateCounter(ta); this.run(pre.text, 'medium'); }
+  },
+  async run(text, intensity) {
+    const out = $('#roast-out'); if (!out) return;
+    clearInterval(this.typing);
+    mount(out, html`<div class="roast-out"><div class="thinking"><span class="dots"><i></i><i></i><i></i></span>Analyzing your life choices…</div></div>`);
+    const btn = $('[data-form=roast] button[type=submit]'); btn && btn.classList.add('loading');
+    try {
+      const [r] = await Promise.all([API.post('/api/ai-roast', { text, intensity }), new Promise(res => setTimeout(res, 650))]);
+      if (!$('#roast-out')) return;
+      if (r.blocked) { mount(out, html`<div class="roast-out safe"><div class="eyebrow" style="color:var(--info)">${r.kind === 'support' ? 'Hey, real talk' : 'Not roastable'}</div><p class="roast-text" style="font-size:16px;margin-top:8px">${r.message}</p></div>`); return; }
+      mount(out, html`<div class="roast-out"><div class="eyebrow">Verdict · ${r.verdict}</div>
+        <p class="roast-text caret" id="roast-text" style="margin-top:10px"></p>
+        <div class="meter" aria-label="Damage ${r.damage} out of 100"><i id="meter"></i></div>
+        <div class="roast-meta"><span>DAMAGE ${r.damage}/100</span><span>${r.intensity.toUpperCase()} · ${r.provider}</span></div>
+        <div class="modal-actions" style="justify-content:flex-start;margin-top:14px"><button type="button" class="btn sm ghost" data-action="copy-roast" data-text="${r.roast}">Copy</button><button type="button" class="btn sm ghost" data-action="share-roast" data-text="${r.roast}">${icon('share')}Share</button><button type="button" class="btn sm" data-action="post-roast" data-text="${text}">Post this story</button></div></div>`);
+      const el = $('#roast-text'); let i = 0;
+      requestAnimationFrame(() => { const m = $('#meter'); if (m) m.style.width = r.damage + '%'; });
+      if (reduceMotion()) { el.textContent = r.roast; el.classList.remove('caret'); }
+      else this.typing = setInterval(() => { el.textContent = r.roast.slice(0, ++i); if (i >= r.roast.length) { clearInterval(this.typing); el.classList.remove('caret'); } }, 18);
+      UI.toast('Roast landed 💀');
+    } catch (e) { mount(out, ''); UI.error(e); } finally { btn && btn.classList.remove('loading'); }
+  },
+};
+
+/* =====================================================================
+   MODERATION  (report modal)
+   ===================================================================== */
+const Moderation = {
+  open(type, key) {
+    Modal.open({ title: `Report ${type}`, body: html`
+    <form data-form="report" data-type="${type}" data-key="${key}" novalidate>
+      <p class="note" style="margin-top:0">Pick the closest reason. Reports are anonymous and reviewed by a human.</p>
+      <div class="radio-list" role="radiogroup" aria-label="Reason">${REASONS.map((r, i) => html`<label><input type="radio" name="reason" value="${r}" ${i === 0 ? 'checked' : ''}>${r}</label>`)}</div>
+      <div class="field"><label for="rp-d">Details (optional) <span class="counter" data-counter="rp-d" data-max="300">0/300</span></label><textarea id="rp-d" name="details" class="textarea" style="min-height:80px" maxlength="300"></textarea></div>
+      <div class="modal-actions"><button type="button" class="btn ghost" data-action="close-modal">Cancel</button><button class="btn danger" type="submit">Submit report</button></div>
+    </form>` });
+  },
+  async submit(form) {
+    const f = new FormData(form), btn = $('button[type=submit]', form); btn.classList.add('loading');
+    try { await API.post('/api/reports', { target_type: form.dataset.type, target_id: form.dataset.type === 'user' ? form.dataset.key : Number(form.dataset.key), reason: f.get('reason'), details: f.get('details') || '' }); Modal.close(); UI.toast('Reported. Thanks for keeping it clean.'); }
+    catch (e) { if (e.status === 409) Modal.close(); UI.error(e); } finally { btn.classList.remove('loading'); }
+  },
+};
+
+/* =====================================================================
+   SETTINGS (identity)
+   ===================================================================== */
+const Settings = {
+  open() {
+    Modal.open({ title: 'Your anonymous identity', body: html`
+    <div style="display:flex;gap:14px;align-items:center;margin-bottom:16px">${avatar(Identity.username, 'lg')}<div><div style="font-weight:800;font-size:18px;overflow-wrap:anywhere">${Identity.username}</div><p class="fine">Lives in this browser only. No email, no phone, nothing real.</p></div></div>
+    <form data-form="rename" novalidate><div class="field"><label for="s-name">Change username <span class="counter" data-counter="s-name" data-max="24">0/24</span></label>
+      <input id="s-name" name="username" class="input" maxlength="24" placeholder="roast_enjoyer" autocomplete="off" value="${Identity.username}"></div>
+      <p class="note">3-24 characters: letters, numbers, underscore.</p>
+      <div class="modal-actions"><button type="button" class="btn ghost" data-action="my-profile">View profile</button><button class="btn" type="submit">Save</button></div></form>
+    <hr style="border:0;border-top:1px solid var(--line);margin:18px 0">
+    <button class="btn danger sm" data-action="reset-identity" id="reset-id">Generate a brand new identity</button>
+    <p class="note" style="margin-top:8px">Your old posts stay under the old name, and you lose control of it.</p>` });
+    $$('[data-counter]', Modal.top()).forEach(c => updateCounter($('#' + c.dataset.counter)));
+  },
+  async rename(form) {
+    const name = new FormData(form).get('username').trim();
+    if (name === Identity.username) return Modal.close();
+    const btn = $('button[type=submit]', form); btn.classList.add('loading');
+    try { await Identity.rename(name); Modal.close(); UI.toast('Username updated.'); Router.go(); }
+    catch (e) { UI.error(e); } finally { btn.classList.remove('loading'); }
+  },
+  async reset(btn) {
+    if (!btn.dataset.armed) { btn.dataset.armed = '1'; btn.textContent = 'Click again to confirm'; setTimeout(() => { if (btn.isConnected) { delete btn.dataset.armed; btn.textContent = 'Generate a brand new identity'; } }, 3500); return; }
+    Identity.reset(); try { await Identity.register(); } catch {}
+    Modal.close(); UI.toast('New identity created.', 'info'); Router.go();
+  },
+};
+
+/* =====================================================================
+   RIGHT RAIL
+   ===================================================================== */
+const Side = {
+  async render() {
+    const box = $('#side-right'); if (!box || getComputedStyle(box).display === 'none') return;
+    const [ch, lb, bt] = await Promise.allSettled([API.get('/api/challenges'), API.get('/api/leaderboard?limit=5'), API.get('/api/battles')]);
+    const hot = bt.status === 'fulfilled' ? [...bt.value.battles].sort((x, y) => y.total - x.total)[0] : null;
+    mount(box, html`
+    <section class="card side-card"><span class="eyebrow">Daily challenge</span>
+      ${ch.status === 'fulfilled' ? html`<p class="side-prompt">${ch.value.challenge.prompt}</p><a class="btn sm ${ch.value.challenge.my_answer ? 'ghost' : ''}" href="#/challenge">${ch.value.challenge.my_answer ? 'See responses' : 'Answer it'}</a>` : html`<p class="fine">Unavailable right now.</p>`}</section>
+    <section class="card side-card"><span class="eyebrow">Top roasters</span>
+      ${lb.status === 'fulfilled' && lb.value.users.length ? html`${lb.value.users.map(u => html`<div class="mini-row" data-action="profile" data-user="${u.username}" role="link" tabindex="0"><span class="pos">#${u.rank}</span><span class="nm">${u.username}</span><span class="pts">${u.roast_score}</span></div>`)}<a class="side-link" href="#/leaderboard">Full leaderboard →</a>` : html`<p class="fine">Nobody yet.</p>`}</section>
+    ${hot ? html`<section class="card side-card"><span class="eyebrow">Hot battle</span><p class="side-prompt" style="margin-bottom:4px">${hot.prompt}</p>
+      <p class="fine">A: ${hot.a.text}<br>B: ${hot.b.text}</p><div class="mini-bar"><i style="width:${hot.a.percent}%"></i><i style="width:${hot.total ? 100 - hot.a.percent : 0}%"></i></div>
+      <span class="fine">${plural(hot.total, 'vote')}</span><br><a class="side-link" href="#/battles">Pick a side →</a></section>` : ''}
+    <p class="fine" style="padding:0 4px">Anonymous. Entertainment only. Be funny, not cruel.</p>`);
+  },
+};
+
+/* =====================================================================
+   HOME VIEW
+   ===================================================================== */
+async function renderHome(view) {
+  document.title = 'ROASTROOM · Post your problem. Let the internet make it worse.';
+  mount(view, html`
+  <section class="hero"><h1>Post your problem.<br><em>Let the internet make it worse.</em></h1><p>Anonymous stories, brutal comments, zero consequences.</p></section>
+  <div class="compose card" data-action="open-create" role="button" tabindex="0" aria-label="Post">${avatar(Identity.username, 'md')}<span class="fake">What went wrong today?</span><span class="btn sm">${icon('plus')}Post</span></div>
+  <div class="toolbar"><div class="tabs" role="tablist">${SORTS.map(([k, l]) => html`<button role="tab" class="${Feed.sort === k ? 'on' : ''}" aria-selected="${String(Feed.sort === k)}" data-action="sort" data-sort="${k}">${l}</button>`)}</div>
+    <button class="icon-btn ml-auto" id="refresh-btn" data-action="refresh" aria-label="Refresh feed">${icon('refresh')}</button></div>
+  <div class="chips" role="group" aria-label="Filter by tag">${['', ...TAGS].map(t => html`<button class="chip ${Feed.tag === t ? 'on' : ''}" data-action="tag" data-tag="${t}">${t ? TAG_EMOJI[t] + ' ' + t : 'All'}</button>`)}</div>
+  <div id="feed"></div><div id="feed-more" style="margin-top:6px"></div>`);
+  Feed.load(true);
+}
+
+/* =====================================================================
+   ROUTER
+   ===================================================================== */
+const Views = {
+  home: renderHome,
+  trending: renderTrending,
+  battles: renderBattles,
+  challenge: (v, c) => Challenge.render(v, c),
+  leaderboard: renderLeaderboard,
+  roast: v => Roast.render(v),
+  search: (v, c) => Search.render(v, (c.params.get('q') || '').trim(), c.alive),
+  u: renderProfile,
+};
+const TITLES = { trending: 'Trending', battles: 'Roast Battles', challenge: 'Daily Challenge', leaderboard: 'Leaderboard', roast: 'AI Roast', search: 'Search' };
+
+const Router = {
+  leave: [],
+  onLeave(fn) { this.leave.push(fn); },
+  parse() {
+    const [path, query = ''] = location.hash.replace(/^#\/?/, '').split('?');
+    const parts = path.split('/').filter(Boolean);
+    let arg = null; try { arg = parts[1] ? decodeURIComponent(parts[1]) : null; } catch {}
+    return { name: parts[0] || 'home', arg, params: new URLSearchParams(query) };
+  },
+  start() { addEventListener('hashchange', () => this.go()); this.go(); },
+  async go() {
+    this.leave.splice(0).forEach(fn => { try { fn(); } catch {} });
+    const { name, arg, params } = this.parse();
+    const id = ++State.navId, alive = () => id === State.navId;
+    Modal.closeAll();
+    State.route = Views[name] ? name : 'home';
+    Nav.mark(State.route === 'u' && Identity.isMe(arg || '') ? 'u' : State.route === 'u' ? 'none' : State.route);
+    const view = $('#view'); window.scrollTo(0, 0);
+    document.title = (TITLES[State.route] ? TITLES[State.route] + ' · ' : '') + 'ROASTROOM';
+    if (State.route === 'search') { const s = $('#search'); if (s && document.activeElement !== s) s.value = params.get('q') || ''; }
+    try { await Views[State.route](view, { arg, params, alive }); }
+    catch (e) { if (alive()) mount(view, UI.errorState(e)); }
+  },
+};
+
+/* =====================================================================
+   EVENTS  (single delegated listeners)
+   ===================================================================== */
+function updateCounter(el) {
+  if (!el) return;
+  const c = $(`[data-counter="${el.id}"]`); if (!c) return;
+  const max = Number(c.dataset.max), n = el.value.length;
+  c.textContent = `${n}/${max}`; c.classList.toggle('warn', n > max * .85); c.classList.toggle('over', n >= max);
+}
+
+const Actions = {
+  'open-create': () => Posts.openCreate(),
+  'close-modal': () => Modal.close(),
+  'open-settings': () => Settings.open(),
+  'my-profile': () => { Modal.closeAll(); location.hash = '#/u/' + Identity.username; },
+  'reset-identity': el => Settings.reset(el),
+  'go-home': () => { location.hash = '#/home'; },
+  retry: async () => { await API.detect(); try { await Identity.register(); } catch {} Router.go(); Side.render(); },
+  'feed-retry': () => Feed.load(true),
+  refresh: () => { Feed.load(true); UI.toast('Feed refreshed', 'info', 1600); },
+  'trend-refresh': () => Router.go(),
+  'load-more': el => { el.classList.add('loading'); Feed.load(false); },
+  sort: el => { Feed.sort = el.dataset.sort; $$('.tabs button').forEach(b => { const on = b === el; b.classList.toggle('on', on); b.setAttribute('aria-selected', String(on)); }); Feed.load(true); },
+  tag: el => { Feed.tag = el.dataset.tag; $$('.chips [data-action=tag]').forEach(b => b.classList.toggle('on', b === el)); Feed.load(true); },
+  like: el => Likes.toggle(Number(el.dataset.id), el),
+  comments: el => Comments.open(Number(el.dataset.id)),
+  share: el => Share.post(Number(el.dataset.id)),
+  report: el => Moderation.open(el.dataset.type, el.dataset.key),
+  profile: el => { Modal.closeAll(); location.hash = '#/u/' + encodeURIComponent(el.dataset.user); },
+  'roast-post': el => { const p = State.posts.get(Number(el.dataset.id)); if (!p) return; State.roastPrefill = { text: `${p.title}. ${p.body}`.slice(0, 500) }; Modal.closeAll(); if (State.route === 'roast') Router.go(); else location.hash = '#/roast'; },
+  vote: el => Battles.vote(Number(el.dataset.id), el.dataset.choice),
+  'new-battle': () => Battles.openCreate(),
+  example: el => { const ta = $('#r-text'); ta.value = el.dataset.text; updateCounter(ta); ta.focus(); },
+  'copy-roast': async el => UI.toast((await copyText(el.dataset.text)) ? 'Copied 📋' : 'Copy failed', 'info'),
+  'share-roast': async el => { const t = el.dataset.text + '\n(via ROASTROOM)'; if (navigator.share) { try { await navigator.share({ text: t }); return; } catch (e) { if (e.name === 'AbortError') return; } } UI.toast((await copyText(t)) ? 'Copied 📋' : 'Copy failed', 'info'); },
+  'post-roast': el => Posts.openCreate({ title: '', body: el.dataset.text, tag: 'Random' }),
+};
+
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-action]'); if (!el) return;
+  const fn = Actions[el.dataset.action]; if (!fn) return;
+  if (el.tagName === 'A') return;
+  e.preventDefault(); e.stopPropagation(); fn(el, e);
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && Modal.stack.length) return Modal.close();
+  const tgt = e.target;
+  if ((e.key === 'Enter' || e.key === ' ') && tgt.matches && tgt.matches('[role=link][data-action],[role=button][data-action]')) { e.preventDefault(); Actions[tgt.dataset.action]?.(tgt, e); }
+  if (e.key === '/' && !/INPUT|TEXTAREA|SELECT/.test(tgt.tagName) && !Modal.stack.length) { e.preventDefault(); $('#search').focus(); }
+  if (e.key === 'Enter' && (e.metaKey || e.ctrlKey) && tgt.tagName === 'TEXTAREA') tgt.form?.requestSubmit();
+  if (e.key === 'Enter' && !e.shiftKey && tgt.matches && tgt.matches('.cmt-form textarea')) { e.preventDefault(); tgt.form.requestSubmit(); }
+});
+document.addEventListener('input', e => {
+  const t = e.target;
+  if (t.id) updateCounter(t);
+  if (t.id === 'search') Search.input(t.value);
+  if (t.id === 'ch-answer') {
+    const max = Number(t.dataset.maxWords), n = wordCount(t.value), c = $('#ch-count');
+    c.textContent = `${n}/${max} words`; c.classList.toggle('over', n > max); c.classList.toggle('warn', n === max);
+  }
+});
+document.addEventListener('submit', e => {
+  const form = e.target; if (!form.dataset.form) return;
+  e.preventDefault();
+  const handlers = {
+    'create-post': () => Posts.submit(form), comment: () => Comments.submit(form), battle: () => Battles.submit(form),
+    challenge: () => Challenge.submit(form), report: () => Moderation.submit(form), rename: () => Settings.rename(form),
+    roast: () => { const f = new FormData(form), text = (f.get('text') || '').trim(); if (text.length < 5) return UI.toast('Give us a bit more to work with (5+ characters).', 'err'); Roast.run(text, f.get('intensity') || 'medium'); },
+  };
+  handlers[form.dataset.form]?.();
+});
+$('#search').addEventListener('keydown', e => { if (e.key === 'Enter') Search.go(e.target.value); if (e.key === 'Escape') { e.target.value = ''; e.target.blur(); } });
+
+/* =====================================================================
+   BOOT
+   ===================================================================== */
+(async function boot() {
+  Identity.load();
+  UI.renderIdentity();
+  await API.detect();
+  try { await Identity.register(); } catch (e) { /* offline banner is already visible; server also registers lazily */ }
+  UI.renderIdentity();
+  Router.start();
+  Side.render();
+  const postId = Number(new URLSearchParams(location.search).get('post'));
+  if (postId > 0) Comments.open(postId);
+})();
+})();
+</script>
+</body>
+</html>

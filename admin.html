@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>ROASTROOM · Moderation</title>
+<meta name="theme-color" content="#09090b">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23ff4d2e'/%3E%3Ctext x='16' y='23' font-size='20' font-weight='800' text-anchor='middle' fill='white' font-family='sans-serif'%3EM%3C/text%3E%3C/svg%3E">
+<style>
+:root{--bg:#09090b;--surface:#121215;--surface-2:#18181c;--surface-3:#202026;--line:#26262c;--line-2:#34343c;--text:#f2f2f5;--muted:#9b9ba6;--dim:#6c6c77;
+  --accent:#ff4d2e;--accent-2:#ff9a3d;--grad:linear-gradient(135deg,#ff4d2e,#ff8a3d);--good:#3ddc97;--bad:#ff5d6c;--info:#7aa8ff;
+  --font:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Inter,Roboto,Arial,sans-serif;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color-scheme:dark}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font:15px/1.5 var(--font);min-height:100vh;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(800px 360px at 15% -10%,rgba(255,77,46,.10),transparent 60%)}
+button,input{font:inherit;color:inherit}button{cursor:pointer;background:none;border:0}
+a{color:inherit}
+.wrap{position:relative;max-width:900px;margin:0 auto;padding:22px 16px 80px}
+header{display:flex;align-items:center;gap:12px;margin-bottom:22px;flex-wrap:wrap}
+.logo{width:34px;height:34px;border-radius:9px;background:var(--grad);display:grid;place-items:center;font-weight:900;color:#fff}
+h1{font-size:20px;font-weight:900;letter-spacing:-.01em}h1 small{display:block;font:700 11px var(--mono);letter-spacing:.14em;color:var(--accent-2);text-transform:uppercase}
+.card{background:linear-gradient(180deg,var(--surface),#0d0d10);border:1px solid var(--line);border-radius:12px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:36px;padding:0 14px;border-radius:9px;font-weight:700;font-size:13.5px;background:var(--grad);color:#fff;transition:filter .15s,opacity .15s}
+.btn:hover{filter:brightness(1.1)}.btn.ghost{background:var(--surface-2);border:1px solid var(--line-2);color:var(--text)}
+.btn.danger{background:rgba(255,93,108,.12);border:1px solid rgba(255,93,108,.45);color:var(--bad)}
+.btn[disabled]{opacity:.5;pointer-events:none}
+.input{width:100%;height:42px;padding:0 13px;border-radius:10px;background:#09090b;border:1px solid var(--line-2);outline:none}
+.input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(255,77,46,.15)}
+.login{max-width:420px;margin:12vh auto 0;padding:24px}
+.login p{color:var(--muted);margin:6px 0 16px;font-size:14px}
+.err{color:var(--bad);font-size:13.5px;margin-top:10px;min-height:20px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.tabs button{padding:7px 14px;border-radius:9px;border:1px solid var(--line-2);background:var(--surface);color:var(--muted);font-weight:700;font-size:13.5px}
+.tabs button.on{background:rgba(255,77,46,.13);border-color:rgba(255,77,46,.55);color:#ffb199}
+.tabs b{font:700 12px var(--mono);margin-left:6px;color:var(--dim)}
+.report{padding:16px;margin-bottom:12px}
+.rh{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--dim);margin-bottom:10px}
+.pill{padding:2px 9px;border-radius:999px;font-size:12px;font-weight:800;border:1px solid var(--line-2);background:var(--surface-2);color:var(--muted);text-transform:capitalize}
+.pill.reason{color:var(--accent-2);border-color:rgba(255,154,61,.4)}
+.pill.open{color:var(--info);border-color:rgba(122,168,255,.45)}.pill.resolved{color:var(--good);border-color:rgba(61,220,151,.45)}.pill.dismissed{color:var(--dim)}
+.target{padding:12px;border-radius:10px;background:#09090b;border:1px solid var(--line);margin-bottom:10px;overflow-wrap:anywhere}
+.target .k{font:700 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-bottom:4px}
+.target h3{font-size:16px;margin-bottom:4px}.target p{white-space:pre-line;color:#d4d4da}
+.flag{color:var(--bad);font-weight:800;font-size:12px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.details{font-size:13.5px;color:var(--muted);margin-bottom:10px}
+.empty{padding:40px 20px;text-align:center;color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);padding:11px 16px;border-radius:11px;background:var(--surface-2);border:1px solid var(--line-2);font-weight:600;z-index:10}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="logo">M</span>
+    <h1><small>ROASTROOM</small>Moderation</h1>
+    <span style="flex:1"></span>
+    <a class="btn ghost" href="./" id="back">← Back to site</a>
+    <button class="btn ghost" id="logout" hidden>Lock</button>
+  </header>
+
+  <section class="card login" id="login">
+    <h1>Admin access</h1>
+    <p>Enter the <code>ADMIN_SECRET</code> from your <code>.env</code>. It never leaves this tab's session storage.</p>
+    <form id="login-form"><input class="input" id="secret" type="password" autocomplete="current-password" placeholder="Admin secret" required>
+      <div class="err" id="login-err" role="alert"></div>
+      <button class="btn" style="width:100%;margin-top:6px" type="submit">Unlock dashboard</button></form>
+  </section>
+
+  <section id="dash" hidden>
+    <div class="tabs" id="tabs"></div>
+    <div id="list"></div>
+  </section>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(() => {
+'use strict';
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let secret = '', base = '', status = 'open', counts = {};
+
+const store = { get: k => { try { return sessionStorage.getItem(k); } catch { return null; } }, set: (k, v) => { try { sessionStorage.setItem(k, v); } catch {} }, del: k => { try { sessionStorage.removeItem(k); } catch {} } };
+
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => t.hidden = true, 2600); }
+
+async function detect() {
+  const list = location.protocol === 'file:' ? ['http://127.0.0.1:5000'] : ['', 'http://127.0.0.1:5000'];
+  for (const b of list) {
+    try { const r = await fetch(b + '/api/health'); const j = await r.json(); if (j.service === 'roastroom') { base = b; return true; } } catch {}
+  }
+  base = list[0]; return false;
+}
+
+async function api(method, path, body) {
+  let res;
+  try {
+    res = await fetch(base + path, { method, headers: { 'Content-Type': 'application/json', 'X-Admin-Secret': secret }, body: body ? JSON.stringify(body) : undefined });
+  } catch { throw new Error("Can't reach the server. Is Flask running?"); }
+  let data = null; try { data = await res.json(); } catch {}
+  if (!res.ok) { const e = new Error((data && data.error) || `Error ${res.status}`); e.status = res.status; throw e; }
+  return data;
+}
+
+function targetHtml(t) {
+  if (t.missing) return `<div class="target"><div class="k">${esc(t.type)}</div><p>This content no longer exists.</p></div>`;
+  if (t.type === 'post') return `<div class="target"><div class="k">Post #${t.id} by ${esc(t.username)} ${t.removed ? '<span class="flag">· REMOVED</span>' : ''}</div><h3>${esc(t.title)}</h3><p>${esc(t.body)}</p></div>`;
+  if (t.type === 'comment') return `<div class="target"><div class="k">Comment #${t.id} by ${esc(t.username)} on post #${t.post_id} ${t.removed ? '<span class="flag">· REMOVED</span>' : ''}</div><p>${esc(t.body)}</p></div>`;
+  return `<div class="target"><div class="k">User</div><h3>${esc(t.username)} ${t.banned ? '<span class="flag">· BANNED</span>' : ''}</h3></div>`;
+}
+
+function reportHtml(r) {
+  const open = r.status === 'open', t = r.target;
+  return `<article class="card report" data-id="${r.id}">
+    <div class="rh"><b style="color:var(--text)">#${r.id}</b><span class="pill reason">${esc(r.reason)}</span><span class="pill ${esc(r.status)}">${esc(r.status)}</span>
+      <span>Reported by ${esc(r.reporter || 'unknown')}</span><span>·</span><time title="${esc(r.created_at)}">${new Date(r.created_at).toLocaleString()}</time></div>
+    ${r.details ? `<p class="details">“${esc(r.details)}”</p>` : ''}
+    ${targetHtml(t)}
+    ${open ? `<div class="actions">
+      <button class="btn" data-act="resolve">Mark resolved</button>
+      <button class="btn ghost" data-act="dismiss">Dismiss</button>
+      ${t.type !== 'user' && !t.missing && !t.removed ? `<button class="btn danger" data-act="remove">Remove ${esc(t.type)}</button>` : ''}
+      ${!t.missing ? `<button class="btn danger" data-act="ban">Ban ${t.type === 'user' ? 'user' : 'author'}</button>` : ''}
+    </div>` : `<div class="rh" style="margin:0">${r.resolved_at ? 'Closed ' + new Date(r.resolved_at).toLocaleString() : ''}</div>`}
+  </article>`;
+}
+
+async function load() {
+  const list = $('#list');
+  try {
+    const r = await api('GET', '/api/reports?status=' + status);
+    counts = r.counts;
+    $('#tabs').innerHTML = [['open', 'Open'], ['resolved', 'Resolved'], ['dismissed', 'Dismissed'], ['all', 'All']].map(([k, l]) =>
+      `<button class="${status === k ? 'on' : ''}" data-tab="${k}">${l}${k !== 'all' ? `<b>${counts[k] ?? 0}</b>` : ''}</button>`).join('');
+    list.innerHTML = r.reports.length ? r.reports.map(reportHtml).join('') : `<div class="card empty">Nothing here. The internet is behaving (suspicious).</div>`;
+  } catch (e) {
+    if (e.status === 403) return lock('Wrong admin secret.');
+    list.innerHTML = `<div class="card empty">${esc(e.message)}</div>`;
+  }
+}
+
+function lock(msg = '') {
+  secret = ''; store.del('rr.admin'); $('#dash').hidden = true; $('#login').hidden = false; $('#logout').hidden = true;
+  $('#login-err').textContent = msg; $('#secret').value = ''; $('#secret').focus();
+}
+
+async function unlock(s) {
+  secret = s;
+  try { await api('GET', '/api/reports?status=open'); } catch (e) { return lock(e.status === 403 ? 'Wrong admin secret.' : e.message); }
+  store.set('rr.admin', s);
+  $('#login').hidden = true; $('#dash').hidden = false; $('#logout').hidden = false;
+  load();
+}
+
+$('#login-form').addEventListener('submit', e => { e.preventDefault(); $('#login-err').textContent = ''; unlock($('#secret').value.trim()); });
+$('#logout').addEventListener('click', () => lock());
+$('#tabs').addEventListener('click', e => { const b = e.target.closest('[data-tab]'); if (b) { status = b.dataset.tab; load(); } });
+$('#list').addEventListener('click', async e => {
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  const id = b.closest('[data-id]').dataset.id, act = b.dataset.act;
+  if ((act === 'remove' || act === 'ban') && !confirm(act === 'remove' ? 'Remove this content for everyone?' : 'Ban this identity from posting?')) return;
+  b.disabled = true;
+  try { await api('PATCH', '/api/reports/' + id, { action: act }); toast({ resolve: 'Marked resolved.', dismiss: 'Dismissed.', remove: 'Content removed.', ban: 'User banned.' }[act]); load(); }
+  catch (err) { toast(err.message); b.disabled = false; }
+});
+
+(async () => {
+  await detect();
+  const saved = store.get('rr.admin');
+  if (saved) unlock(saved); else $('#secret').focus();
+})();
+})();
+</script>
+</body>
+</html>
