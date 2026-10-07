@@ -39,10 +39,10 @@ from flask import Flask, g, jsonify, request, send_from_directory  # noqa: E402
 from flask_cors import CORS  # noqa: E402
 from werkzeug.exceptions import HTTPException  # noqa: E402
 
-import database  # noqa: E402
-import moderation  # noqa: E402
-import roast_engine  # noqa: E402
-from database import TAGS, USERNAME_RE, iso  # noqa: E402
+from backend import moderation
+from backend import roast_engine
+from backend.database import TAGS, USERNAME_RE, iso  # noqa: E402
+from backend import database
 
 VERSION = "1.0.0"
 PRODUCTION = os.environ.get("ROASTROOM_ENV", os.environ.get("FLASK_ENV", "")).lower() == "production"
